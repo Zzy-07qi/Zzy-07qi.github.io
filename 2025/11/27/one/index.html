@@ -157,7 +157,7 @@
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2025-11-28 23:43:03
+          2025-11-29 08:38:26
         </span>
         
       </div>
@@ -188,13 +188,15 @@
 <p>但是当函数以箭头函数的形式出现时，this的指向不是调用者，而是继承外层最近的<strong>非箭头</strong>函数的this，且无法通过call等进行修改</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj=&#123;</span><br><span class="line">    <span class="attr">name</span>:<span class="string">&#x27;A&#x27;</span>,</span><br><span class="line">    <span class="attr">fn</span>:<span class="function">()=&gt;</span><span class="title function_">console</span>(<span class="variable language_">this</span>)</span><br><span class="line">&#125;</span><br><span class="line">obj.<span class="title function_">fn</span>()<span class="comment">//window</span></span><br><span class="line">obj.<span class="property">fn</span>.<span class="title function_">call</span>(obj)<span class="comment">//window</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="FC函数式编程"><a href="#FC函数式编程" class="headerlink" title="FC函数式编程"></a>FC函数式编程</h2><h3 id="函数与闭包"><a href="#函数与闭包" class="headerlink" title="函数与闭包"></a>函数与闭包</h3><p>我对闭包的了解，用个比喻来说，我们平常想要吃面时（不去面馆食堂），可以通过购买原材料以及各种佐料来完成面条的制作，也可以直接购买泡面，前者我们不仅需要花费时间挑选和购买食材和佐料，还需要我们在做面的过程中花费时间，而后者则不需要那么多繁琐的步骤。函数闭包就像泡面一样，我们可以通过函数将所要执行的语句封装，在需要使用时调用，这样可以帮我们省去大量时间，不需要我们在使用时重复编写大量相同&#x2F;相似的语句。</p>
+<h2 id="FC函数式编程"><a href="#FC函数式编程" class="headerlink" title="FC函数式编程"></a>FC函数式编程</h2><h3 id="函数与闭包"><a href="#函数与闭包" class="headerlink" title="函数与闭包"></a>函数与闭包</h3><p>先说说封装</p>
+<p>用个比喻来说，我们平常想要吃面时（不去面馆食堂），可以通过购买原材料以及各种佐料来完成面条的制作，也可以直接购买泡面，前者我们不仅需要花费时间挑选和购买食材和佐料，还需要我们在做面的过程中花费时间，而后者则不需要那么多繁琐的步骤。函数封装就像泡面一样，我们可以通过函数将所要执行的语句封装，在需要使用时调用，这样可以帮我们省去大量时间，不需要我们在使用时重复编写大量相同&#x2F;相似的语句。</p>
 <p>例如当我们需要通过编程来帮助我们快速计算两数的和</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">console</span>(<span class="number">1</span>+<span class="number">1</span>);</span><br><span class="line"><span class="title function_">console</span>(<span class="number">1</span>+<span class="number">2</span>);</span><br><span class="line"><span class="title function_">console</span>(<span class="number">1</span>+<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">sum</span>(<span class="params">a,b</span>)&#123;</span><br><span class="line">    <span class="title function_">console</span>(a+b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">sum</span>(<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line"><span class="title function_">sum</span>(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"><span class="title function_">sum</span>(<span class="number">1</span>,<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
 
-<p>显然，比起第一个重复书写相似语句来达到目的，通过函数闭包 在我们后续需要重复使用加法这一功能时能省去许多时间，且我们通过函数闭包，函数中的各种量是不会污染外部环境的（作用域），这会大大减少开发时bug出现的概率。</p>
+<p>这里是对加法函数进行了封装，而闭包则是在封装的基础上更近一步</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createAdder</span>(<span class="params">baseNum</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params">num</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> baseNum+num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> add1 =<span class="title function_">createAdder</span>(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">const</span> add2 =<span class="title function_">createAdder</span>(<span class="number">2</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add1</span>(<span class="number">2</span>))<span class="comment">//1+2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add2</span>(<span class="number">2</span>))<span class="comment">//2+2</span></span><br></pre></td></tr></table></figure>
+
+<p>闭包通过先输入一个变量，并返回一个函数，使add1&#x2F;2成为拥有专属规则(只能加1&#x2F;2)的函数，实现第一个输入变量的持久化。</p>
 
       </div>
       
@@ -210,7 +212,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2025-11-28 23:43:03
+              2025-11-29 08:38:26
             </span>
             
           </div>
